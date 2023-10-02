@@ -34,10 +34,10 @@ def place_reviews(place_id):
 
         new_review = Review(place_id=place_id, **data)
         new_review.save()
-        return new_review.to_dict(), 201  # Return the new Review with status code 201
+        return new_review.to_dict(), 201
 
     elif request.method == 'GET':
-        # Retrieve and return a list of Review objects associated with the place
+        # Retrieve and re
         reviews_list = [review.to_dict() for review in place.reviews]
         return jsonify(reviews_list)
 
@@ -50,13 +50,13 @@ def review_by_id(review_id):
     # Retrieve the Review object based on review_id
     review = storage.get(Review, review_id)
     if review is None:
-        abort(404)  # Raise a 404 error if the review doesn't exist
+        abort(404)
 
     if request.method == 'DELETE':
         # Delete the Review object
         review.delete()
         storage.save()
-        return {}, 200  # Return an empty dictionary with status code 200
+        return {}, 200
 
     elif request.method == 'PUT':
         # Update the Review object with data from the request
@@ -68,7 +68,7 @@ def review_by_id(review_id):
             if key not in ["id", "user_id", "place_id", "created_at", "updated_at"]:
                 setattr(review, key, value)
         review.save()
-        return review.to_dict(), 200  # Return the updated Review with status code 200
+        return review.to_dict(), 200
 
     elif request.method == 'GET':
-        return review.to_dict()  # Return the Review object as JSON
+        return review.to_dict()
