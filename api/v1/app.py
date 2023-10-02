@@ -11,6 +11,7 @@ app.url_map.strict_slashes = False
 app.register_blueprint(app_views)
 CORS(app, resources={r"/*": {"origins": "0.0.0.0"}})
 
+
 @app.teardown_appcontext
 def close_storage(exception):
     """Closes the current SQLAlchemy session."""
