@@ -5,14 +5,15 @@ from flask import jsonify, abort, make_response, request
 from models import storage
 from models.City import City
 
-
-@app_views.route("/states/<state_id>/cities", methods=["GET"], strict_slashes=False)
+route = "/states/<state_id>/cities"
+@app_views.route(route, methods=["GET"], strict_slashes=False)
 def cities(state_id):
     """Retrieves  list of all City objects"""
     state = storage.get("State", state_id)
     if not state:
         abort(404)
     return jsonify([city.to_dict() for city in state.cities])
+
 
 
 @app_views.route("/cities/<city_id>", methods=["GET"], strict_slashes=False)
