@@ -1,27 +1,38 @@
 #!/usr/bin/python3
 """ Script that registers a Blueprint and runs Flask """
-from flask import Flask, make_response, jsonify
+from flask import Flask, jsonify
 from flask_cors import CORS
 from models import storage
 from api.v1.views import app_views
 from os import getenv
+from flasgger import swagger
+from flasgger.utils import swag_from
+
 
 app = Flask(__name__)
-app.url_map.strict_slashes = False
 app.register_blueprint(app_views)
-CORS(app, resources={r"/*": {"origins": "0.0.0.0"}})
+cor = CORS(app, resources={r"/api/v1/*": {"origins": "0.0.0.0"}})
 
 
 @app.teardown_appcontext
-def close_storage(exception):
+def teardown(self):
     """Closes the current SQLAlchemy session."""
-    storage.close()
+    return storage.close()
 
 
 @app.errorhandler(404)
-def not_found(error):
+def error(e):
     """Returns a JSON-formatted 404 status code"""
-    return make_response(jsonify({"error": "Not found"}), 404)
+    return jsonify({"error": "Not found"}), 404
+
+
+app.config['SWAGGER'] = {
+        'title': 'AirBnB clone Restful API',
+        'uiversion': 3
+}
+
+
+swagger(app)
 
 
 if __name__ == "__main__":
