@@ -1,27 +1,30 @@
 #!/usr/bin/python3
-"""Index File"""
+"""Index File  returns the status of the application"""
+import models
 from api.v1.views import app_views
 from flask import jsonify
-from models import storage
+from models.amenity import Amenity
+from models.city import City
+from models.place import Place
+from models.review import Review
+from models.state import State
+from models.user import User
 
 
-@app_views.route("/api/v1/stats", methods=["GET"])
-def get_stats():
+@app_views.route("/status", strict_slashes=False)
+def view_status():
+    """function that return a json message"""
+    return jsonify({"status": "OK"})
 
-    amenity_count = storage.count("Amenity")
-    city_count = storage.count("City")
-    place_count = storage.count("Place")
-    review_count = storage.count("Review")
-    state_count = storage.count("State")
-    user_count = storage.count("User")
 
-    counts = {
-        "amenities": amenity_count,
-        "cities": city_count,
-        "places": place_count,
-        "reviews": review_count,
-        "states": state_count,
-        "users": user_count,
-    }
-
-    return jsonify(counts), 200
+@app_views.route("/stats", strict_slashes=False)
+def view_stats():
+    """retrieves the number of each object by type"""
+    return jsonify({
+        "amenities": models.storage.count(Amenity),
+        "cities": models.storage.count(City),
+        "places": models.storage.count(Place),
+        "reviews": models.storage.count(Review),
+        "states": models.storage.count(State),
+        "users": models.storage.count(User)
+    })
